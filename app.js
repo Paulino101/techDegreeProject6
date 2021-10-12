@@ -3,16 +3,19 @@ const phrase = document.getElementById("phrase");
 const startGame = document.querySelector("a");
 const overlay = document.getElementById("overlay");
 const ul = document.querySelector("ul");
+const heartArray = document.querySelectorAll(".tries img");
+const title = document.getElementsByClassName("title");
+const WorL = document.querySelector("h2");
 
 // const button = document.querySelectorAll("button");
 let missed = 0;
 const phrases = [
-  "Paulino Jair",
-  "Koda Beans",
-  "Alexa Rodriguez",
-  "Rosa Cordova",
-  "Juan Manuel",
-  "Yolanda Hernandez",
+  "paulino rodriguez",
+  "the cow jumped over the moon",
+  "curiosity killed the cat",
+  "just do it",
+  "google it",
+  "take me to your leader",
 ];
 
 function getRandomInt(max) {
@@ -43,28 +46,56 @@ function addPhraseToDisplay(randomString) {
     createLi.textContent = randomString[i];
     ul.append(createLi);
     spaceOrLetter(createLi);
-    console.log(createLi);
   }
 }
 
 addPhraseToDisplay(phraseArr);
 
-function checkLetter(button) {
-  let letters = document.getElementsByClassName("letter");
-  let match = null;
-  for (let i = 0; i > letters.length; i++) {
-    if (letters[i].textContent === button.textContent) {
-      letters[i].classList.add("show");
-      let match = button.textContent;
+qwerty.addEventListener("click", (e) => {
+  if (e.target.tagName === "BUTTON") {
+    const button = e.target;
+    button.className = "chosen";
+    button.setAttribute("disabled", "");
+    const letter = button.textContent;
+    const letterFound = checkLetter(letter);
+    if (letterFound === null) {
+      heartArray[missed].src = "images/lostHeart.png";
+      missed++;
     }
   }
-  return match;
+  checkWin();
+});
+
+function checkLetter(button) {
+  const letters = document.getElementsByClassName("letter");
+  let match = null;
+  let matchCounter = 0;
+  for (let i = 0; i < letters.length; i++) {
+    if (button === letters[i].textContent) {
+      letters[i].classList.add("show");
+      match = button;
+      matchCounter++;
+    }
+  }
+  if (matchCounter > 0) {
+    return match;
+  } else {
+    return null;
+  }
 }
 
-qwerty.addEventListener("click", (e) => {
-  if (e.target != button || e.target.classList === "chosen") {
-  } else {
-    e.target.classList.add("chosen");
-    let check = checkLetter(button);
+function checkWin() {
+  const classLetter = document.querySelectorAll(".letter");
+  const classShow = document.querySelectorAll(".show");
+  console.log(classShow.length);
+  console.log(classLetter.length);
+  if (classLetter.length === classShow.length) {
+    overlay.className = "win";
+    WorL.textContent = "You Win!";
+    overlay.style.display = "flex";
+  } else if (missed > 4) {
+    overlay.className = "lose";
+    WorL.textContent = "You Lose.";
+    overlay.style.display = "flex";
   }
-});
+}
